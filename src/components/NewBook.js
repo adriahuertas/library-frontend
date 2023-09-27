@@ -1,11 +1,21 @@
-import { useState } from 'react'
+import { useMutation, useQuery } from "@apollo/client"
+import { useState } from "react"
+import { ADD_BOOK, GET_ALL_AUTHORS, GET_ALL_BOOKS } from "../queries"
 
 const NewBook = (props) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [published, setPublished] = useState('')
-  const [genre, setGenre] = useState('')
+  const [title, setTitle] = useState("")
+  const [author, setAuthor] = useState("")
+  const [published, setPublished] = useState("")
+  const [genre, setGenre] = useState("")
   const [genres, setGenres] = useState([])
+
+  const [createBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: GET_ALL_BOOKS }, { query: GET_ALL_AUTHORS }],
+    onError: (error) => {
+      const message = error.graphQLErrors[0].message
+      console.log(message)
+    },
+  })
 
   if (!props.show) {
     return null
@@ -14,18 +24,20 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
+    createBook({
+      variables: { title, author, published: parseInt(published), genres },
+    })
 
-    setTitle('')
-    setPublished('')
-    setAuthor('')
+    setTitle("")
+    setPublished("")
+    setAuthor("")
     setGenres([])
-    setGenre('')
+    setGenre("")
   }
 
   const addGenre = () => {
     setGenres(genres.concat(genre))
-    setGenre('')
+    setGenre("")
   }
 
   return (
@@ -62,7 +74,7 @@ const NewBook = (props) => {
             add genre
           </button>
         </div>
-        <div>genres: {genres.join(' ')}</div>
+        <div>genres: {genres.join(" ")}</div>
         <button type="submit">create book</button>
       </form>
     </div>
