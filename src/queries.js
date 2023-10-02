@@ -1,5 +1,17 @@
 import { gql } from "@apollo/client"
 
+// eslint-disable-next-line
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    title
+    author {
+      name
+    }
+    published
+    genres
+  }
+`
+
 export const GET_ALL_AUTHORS = gql`
   query {
     allAuthors {
@@ -12,14 +24,10 @@ export const GET_ALL_AUTHORS = gql`
 export const GET_ALL_BOOKS = gql`
   query {
     allBooks {
-      author {
-        name
-      }
-      published
-      title
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 export const ADD_BOOK = gql`
@@ -68,12 +76,8 @@ export const LOGIN = gql`
 export const GET_USER_FAVORITE_BOOKS = gql`
   query {
     allFavoriteBooks {
-      author {
-        name
-      }
-      published
-      title
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
