@@ -9,6 +9,7 @@ const BOOK_DETAILS = gql`
     }
     published
     genres
+    id
   }
 `
 
@@ -76,6 +77,14 @@ export const LOGIN = gql`
 export const GET_USER_FAVORITE_BOOKS = gql`
   query {
     allFavoriteBooks {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
       ...BookDetails
     }
   }
